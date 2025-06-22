@@ -1,0 +1,22 @@
+# === BACKEND (nest-backend) ===
+nest-backend/node_modules/
+nest-backend/dist/
+nest-backend/.env
+nest-backend/.env
+nest-backend/coverage/
+nest-backend/*.tsbuildinfo
+
+# === FRONTEND (react-frontend) ===
+react-frontend/node_modules/
+react-frontend/build/
+react-frontend/.env
+react-frontend/.env
+react-frontend/coverage/
+
+# === COMMON FILES ===
+*.log
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
