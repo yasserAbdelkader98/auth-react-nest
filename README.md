@@ -14,9 +14,11 @@ cd auth-react-nest
 
 # Setup
 cd react-frontend
-fill the .env like the .env.example
-npm install
+create .env file and fill it like the .env.example
+npm install => install dependences
+npm run start => to run the project
 
 cd nest-backend
-fill the .env like the .env.example
-npm install
+create .env file and fill it like the .env.example
+npm install => install dependences
+npm run start => to run the project

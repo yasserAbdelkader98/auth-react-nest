@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { LoginDto } from './auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +13,7 @@ export class AuthService {
         private jwtService: JwtService
     ){}
     
-    async login(data: {email: string, password: string}){
+    async login(data: LoginDto){
         let user = await this.userModel.findOne({ email: data.email }).lean()
         if(!user){
             throw new UnauthorizedException("Invalid Credentials!")

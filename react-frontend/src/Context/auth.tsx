@@ -6,7 +6,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLogged, setIsLogged] = useState<boolean>(() => {
-    return localStorage.getItem('token') ? true : false;
+    return localStorage.getItem('userId') ? true : false;
   });
 
   const [userId, setUserId] = useState<string>(() => {
@@ -23,6 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logoutContext = () => {
     setIsLogged(false);
     localStorage.removeItem('token');
+    localStorage.removeItem('userId');
   };
 
   return (
