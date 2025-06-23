@@ -46,6 +46,7 @@ function MyNavbar() {
             <Navbar.Collapse className="justify-content-center">
               <Nav>
                 <Nav.Link className="mx-3 text-secondary" as={Link} style={navStyle} to='/'>Home</Nav.Link>
+                <Nav.Link className="mx-3 text-secondary" as={Link} style={navStyle} to='/docs'>Api Docs</Nav.Link>
                 
                 { 
                 auth?.isLogged ? 

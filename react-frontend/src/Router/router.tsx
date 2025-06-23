@@ -7,6 +7,7 @@ import NotFound from "../pages/NotFound";
 import AccountSettings from "../pages/AccountSettings";
 import { Suspense } from 'react'
 import AuthGuard from '../Guards/auth.guard'
+import Swagger from '../pages/swagger'
 
 function Routing() {    
     
@@ -17,6 +18,7 @@ function Routing() {
                 <Route path='/' element={< Home />}></Route>
                 <Route path='/login' element={< Login />}></Route>
                 <Route path='/register' element={< Register />}></Route>         
+                <Route path='/docs' element={< Swagger />}></Route>         
                 
                 <Route element={<AuthGuard />}>
                     <Route path='/accountSettings' element={< AccountSettings />}></Route>         
