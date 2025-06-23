@@ -21,7 +21,11 @@ export class UsersService {
                 lastName: data.lastName,
                 email: data.email
             })
-            return await newUser.save()
+
+            let registeredUser = await newUser.save()
+            let { password, ...obj } = registeredUser.toObject()
+            return obj
+
         }else{
             throw new ConflictException('Email already exists!')
         }
