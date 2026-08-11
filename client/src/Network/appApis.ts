@@ -27,8 +27,8 @@ export const addUser = (body: User) => {
   );
 };
 
-export const deleteUser = (id: string) => {
+export const deleteUser = () => {
   return AxisInstance.delete(
-    `/users/${id}`,
+    `/users/me`,
   );
 };

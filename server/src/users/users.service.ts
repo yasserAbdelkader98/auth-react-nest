@@ -10,6 +10,10 @@ export class UsersService {
     
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>){}
 
+    async findByEmail(email: string) {
+        return this.userModel.findOne({ email }).lean();
+    }
+
     async register(data: UserDto){
         try {
             const newUser = new this.userModel({
@@ -37,11 +41,12 @@ export class UsersService {
     }
 
     async deleteMyAccount(id: string){
-        let user = await this.userModel.findOne({ _id: id })
-        if(user){
-            return await user.deleteOne()
-        }else{
-            throw new NotFoundException('Account isnot exists!')
-        } 
+        const deletedUser = await this.userModel.findByIdAndDelete(id);
+
+        if (!deletedUser) {
+            throw new NotFoundException('Account does not exist');
+        }
+
+        return { message: 'Account deleted successfully' };
     }
 }

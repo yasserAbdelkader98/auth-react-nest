@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { getModelToken } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../users/users.schema';
+import { UsersService } from '../users/users.service';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -12,8 +11,8 @@ describe('AuthService', () => {
       providers: [
         AuthService,
         {
-          provide: getModelToken(User.name),
-          useValue: { findOne: jest.fn() },
+          provide: UsersService,
+          useValue: { findByEmail: jest.fn() },
         },
         {
           provide: JwtService,

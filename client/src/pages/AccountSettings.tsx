@@ -44,7 +44,7 @@ function AccountSettings() {
       cancelButtonText: 'No, cancel!',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteAccount(auth?.userId || '');
+        await deleteAccount();
       } else if (
         result.dismiss === Swal.DismissReason.cancel
       ) {
@@ -53,9 +53,9 @@ function AccountSettings() {
     })
   }
 
-  async function deleteAccount(id: string) {
+  async function deleteAccount() {
     try {
-      await deleteUser(id);
+      await deleteUser();
       // The account is already deleted even if clearing its now-unusable cookie fails.
       await logout().catch(() => undefined);
 
