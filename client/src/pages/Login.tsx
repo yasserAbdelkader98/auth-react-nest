@@ -1,29 +1,14 @@
 import { useState } from 'react';
-import { Formik, FormikErrors } from 'formik';
+import { Formik } from 'formik';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/auth';
 import showToast from '../Helpers/SweetAlert';
 import getApiErrorMessage from '../Network/apiError';
 import { login } from '../Network/appApis';
 import { LoginRequest } from '../types/auth';
+import { validateLogin } from '../auth/auth.validation';
 
 const initialValues: LoginRequest = { email: '', password: '' };
-
-function validateLogin(values: LoginRequest): FormikErrors<LoginRequest> {
-  const errors: FormikErrors<LoginRequest> = {};
-
-  if (!values.email) {
-    errors.email = 'Email is required';
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-    errors.email = 'Invalid email address';
-  }
-
-  if (!values.password) {
-    errors.password = 'Password is required';
-  }
-
-  return errors;
-}
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
