@@ -1,34 +1,14 @@
-import { AxisInstance } from "./axiosConfig";
+import axiosInstance from './axiosConfig';
+import { LoginRequest, RegisterRequest, UserResponse } from '../types/auth';
 
-type User = {
-    firstName?: string;
-    lastName?: string;
-    email: string;
-    password: string;
-}
+export const login = (body: LoginRequest) =>
+  axiosInstance.post<UserResponse>('/auth/login', body);
 
-//////////////////////////////////////////////// AUTH ///////////////////////////////////////////////
-export const login = (body: User) => {
-  return AxisInstance.post(
-    `/auth/login`,
-    body
-  );
-}
+export const getCurrentUser = () => axiosInstance.get<UserResponse>('/auth/me');
 
-export const logout = () => {
-  return AxisInstance.post(`/auth/logout`);
-}
+export const logout = () => axiosInstance.post('/auth/logout');
 
-//////////////////////////////////////////////// USERS ///////////////////////////////////////////////
-export const addUser = (body: User) => {
-  return AxisInstance.post(
-    `/users/register`,
-    body,
-  );
-};
+export const register = (body: RegisterRequest) =>
+  axiosInstance.post<UserResponse>('/users/register', body);
 
-export const deleteUser = () => {
-  return AxisInstance.delete(
-    `/users/me`,
-  );
-};
+export const deleteAccount = () => axiosInstance.delete('/users/me');

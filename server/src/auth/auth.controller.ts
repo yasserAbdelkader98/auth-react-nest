@@ -1,23 +1,28 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   Post,
   Req,
   Res,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './auth.dto';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { RateLimitService } from '../rate-limit/rate-limit.service';
 import { ConfigService } from '@nestjs/config';
 import {
   AUTH_COOKIE_MAX_AGE_MS,
   AUTH_COOKIE_NAME,
+  AUTH_COOKIE_SECURITY_NAME,
   createAuthCookieOptions,
 } from './auth-cookie.config';
+import { AuthGuard } from './auth.guard';
+import { AuthenticatedRequest } from './auth.types';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -67,6 +72,13 @@ export class AuthController {
     response.clearCookie(AUTH_COOKIE_NAME, this.authCookieOptions());
 
     return { message: 'Successfully logged out' };
+  }
+
+  @Get('me')
+  @UseGuards(AuthGuard)
+  @ApiCookieAuth(AUTH_COOKIE_SECURITY_NAME)
+  getCurrentUser(@Req() request: AuthenticatedRequest) {
+    return this.authService.getCurrentUser(request.user.id);
   }
 
   private authCookieOptions() {

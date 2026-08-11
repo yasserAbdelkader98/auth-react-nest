@@ -1,98 +1,58 @@
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { deleteUser, logout } from '../Network/appApis';
-import { Toast } from '../Helpers/SweetAlert';
+import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/auth';
-import Swal from "sweetalert2";
+import showToast from '../Helpers/SweetAlert';
+import getApiErrorMessage from '../Network/apiError';
+import { deleteAccount, logout as logoutRequest } from '../Network/appApis';
 
 function AccountSettings() {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const auth = useAuth();
 
-  function createData(label: string, action: JSX.Element) {
-    return { label, action };
-  }
-
-  const rows = [
-    createData( 'Delete My Account',
-      <button onClick={DeleteMyAccount} className="btn btn-danger">
-        Delete
-      </button>
-    ),
-  ];
-
-  function DeleteMyAccount(){
-    Swal.mixin({
-      toast: true,
-        customClass: {
-        confirmButton: 'btn btn-danger m-2',
-        cancelButton: 'btn btn-outline-dark m-2'
-      },
-      buttonsStyling: false
-    }).fire({
-      title: 'Logout',
-      text: `Are you sure you want to Delete Your Account?`,
+  async function handleDeleteAccount() {
+    const result = await Swal.fire({
+      title: 'Delete account',
+      text: 'Are you sure you want to permanently delete your account?',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Delete!',
-      cancelButtonText: 'No, cancel!',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await deleteAccount();
-      } else if (
-        result.dismiss === Swal.DismissReason.cancel
-      ) {
-        Toast('error','Cancelled!')
-      }
-    })
-  }
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#dc3545',
+    });
 
-  async function deleteAccount() {
+    if (!result.isConfirmed) return;
+
     try {
-      await deleteUser();
-      // The account is already deleted even if clearing its now-unusable cookie fails.
-      await logout().catch(() => undefined);
-
-      auth?.logoutContext();
-      Navigate('/');
-      Toast('success', 'Your Account has been Deleted');
-    } catch (err: any) {
-      const message = err.response?.data?.message ?? 'Unable to delete your account';
-      Toast('error', message);
+      await deleteAccount();
+      await logoutRequest().catch(() => undefined);
+      auth.logout();
+      navigate('/');
+      showToast('success', 'Your account has been deleted');
+    } catch (error: unknown) {
+      showToast(
+        'error',
+        getApiErrorMessage(error, 'Unable to delete your account')
+      );
     }
   }
 
   return (
-    <div className="container d-flex justify-content-center align-items-center flex-wrap">
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>My Account Settings</TableCell>
-              <TableCell align="right">Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow
-                key={index}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.label}
-                </TableCell>
-                <TableCell align="right">{row.action}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <div className="container py-5">
+      <div className="card mx-auto" style={{ maxWidth: 640 }}>
+        <div className="card-body d-flex align-items-center justify-content-between">
+          <div>
+            <h1 className="h4">Account settings</h1>
+            <p className="mb-0 text-muted">Permanently delete your account.</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleDeleteAccount}
+            className="btn btn-danger"
+          >
+            Delete account
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

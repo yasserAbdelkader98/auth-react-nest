@@ -1,15 +1,15 @@
-import Swal from "sweetalert2"
+import Swal from 'sweetalert2';
 
-export function Toast(icon: 'success' | 'error' | 'warning' | 'info' | 'question', title: string) {
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-    });
+export default function showToast(
+  icon: 'success' | 'error' | 'warning' | 'info' | 'question',
+  title: string
+) {
+  const toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+  });
 
-    Toast.fire({
-        icon: icon,
-        title: title,
-    });
+  toast.fire({ icon, title });
 }

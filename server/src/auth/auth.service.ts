@@ -29,4 +29,14 @@ export class AuthService {
     void password;
     return { userInfo, token };
   }
+
+  async getCurrentUser(id: string) {
+    const user = await this.usersService.findPublicUserById(id);
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return user;
+  }
 }

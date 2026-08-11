@@ -1,37 +1,46 @@
-// src/context/AuthContext.tsx
-import React, { createContext, useContext, useState } from 'react';
-import { AuthContextType } from '../InterFaces/auth.interface';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { getCurrentUser } from '../Network/appApis';
+import { AuthContextValue, UserResponse } from '../types/auth';
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isLogged, setIsLogged] = useState<boolean>(() => {
-    return localStorage.getItem('userId') ? true : false;
-  });
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<UserResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [userId, setUserId] = useState<string>(() => {
-    return localStorage.getItem('userId') ?? ''
-  });
+  useEffect(() => {
+    getCurrentUser()
+      .then((response) => setUser(response.data))
+      .catch(() => setUser(null))
+      .finally(() => setIsLoading(false));
+  }, []);
 
-  const loginContext = (userId: string) => {
-    setIsLogged(true);
-    setUserId(userId)
-    localStorage.setItem('userId', userId)
-  };
-
-  const logoutContext = () => {
-    setIsLogged(false);
-    localStorage.removeItem('userId');
-  };
-
-  return (
-    <AuthContext.Provider value={{ userId, isLogged, loginContext, logoutContext }}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      user,
+      isAuthenticated: user !== null,
+      isLoading,
+      login: setUser,
+      logout: () => setUser(null),
+    }),
+    [isLoading, user]
   );
-};
 
-export const useAuth = () => {
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error('useAuth must be used inside AuthProvider');
+  }
+
   return context;
-};
+}

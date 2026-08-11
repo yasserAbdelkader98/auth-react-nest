@@ -1,14 +1,14 @@
-import { useAuth } from "../Context/auth";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../Context/auth';
 
-const AuthGuard = () => {
-  const auth = useAuth();
+function AuthGuard() {
+  const { isAuthenticated, isLoading } = useAuth();
 
-  if (!auth?.isLogged) {
-    return <Navigate to="/login" replace />;
+  if (isLoading) {
+    return null;
   }
 
-  return <Outlet />;
-};
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+}
 
 export default AuthGuard;

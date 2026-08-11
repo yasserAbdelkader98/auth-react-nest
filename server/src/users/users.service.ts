@@ -17,6 +17,10 @@ export class UsersService {
     return this.userModel.findOne({ email }).lean();
   }
 
+  async findPublicUserById(id: string) {
+    return this.userModel.findById(id).select('-password').lean();
+  }
+
   async register(data: UserDto) {
     try {
       const newUser = new this.userModel({

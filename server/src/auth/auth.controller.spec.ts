@@ -3,6 +3,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { RateLimitService } from '../rate-limit/rate-limit.service';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -13,7 +14,7 @@ describe('AuthController', () => {
       providers: [
         {
           provide: AuthService,
-          useValue: { login: jest.fn() },
+          useValue: { login: jest.fn(), getCurrentUser: jest.fn() },
         },
         {
           provide: RateLimitService,
@@ -26,6 +27,10 @@ describe('AuthController', () => {
         {
           provide: ConfigService,
           useValue: { get: jest.fn().mockReturnValue('test') },
+        },
+        {
+          provide: JwtService,
+          useValue: { verifyAsync: jest.fn() },
         },
       ],
     }).compile();

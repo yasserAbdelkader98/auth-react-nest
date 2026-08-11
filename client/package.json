@@ -8,15 +8,11 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "lint": "eslint --ext .js,.cjs,.ts,.tsx .",
-    "lint:fix": "eslint --ext .js,.cjs,.ts,.tsx . --fix",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^7.1.2",
-    "@mui/material": "^7.1.2",
     "axios": "^1.10.0",
     "bootstrap": "^5.3.7",
     "formik": "^2.4.6",

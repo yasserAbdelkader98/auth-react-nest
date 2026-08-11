@@ -1,30 +1,34 @@
-import { describe, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import App from './App';
 
-import { App } from './App';
+vi.mock('./Network/appApis', () => ({
+  getCurrentUser: vi.fn().mockRejectedValue(new Error('Not authenticated')),
+  login: vi.fn(),
+  logout: vi.fn(),
+  register: vi.fn(),
+  deleteAccount: vi.fn(),
+}));
 
 describe('App', () => {
-  it('Renders hello world', () => {
-    // ARRANGE
-    // ACT
-    // EXPECT
-    expect(
-      screen.getByRole('heading', {
-        level: 1,
-      })
-    ).toHaveTextContent('Hello World');
+  beforeEach(() => {
+    window.history.pushState({}, '', '/');
   });
-  it('Renders not found if invalid path', () => {
-    render(
-      <MemoryRouter initialEntries={['/this-route-does-not-exist']}>
-        <App />
-      </MemoryRouter>
-    );
+
+  it('renders the application home page', () => {
+    render(<App />);
+
     expect(
-      screen.getByRole('heading', {
-        level: 1,
-      })
-    ).toHaveTextContent('Not Found');
+      screen.getByRole('heading', { name: 'Welcome to the application' })
+    ).toBeInTheDocument();
+  });
+
+  it('renders the not-found page for an unknown route', () => {
+    window.history.pushState({}, '', '/this-route-does-not-exist');
+    render(<App />);
+
+    expect(
+      screen.getByRole('heading', { name: 'Page Not Found' })
+    ).toBeInTheDocument();
   });
 });
