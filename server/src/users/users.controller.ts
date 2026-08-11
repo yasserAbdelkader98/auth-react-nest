@@ -27,7 +27,7 @@ export class UsersController {
     async register(@Body() user: UserDto, @Req() request: Request){
         const ip = request.ip || request.socket.remoteAddress || 'unknown';
         this.rateLimitService.recordRegistrationAttempt(ip);
-        return await this.userService.register(user) 
+        return this.userService.register(user) 
     }
 
     @Delete('me')

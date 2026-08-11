@@ -3,11 +3,13 @@ import { AppModule } from './app.module'
 import { ValidationPipe } from '@nestjs/common'
 import * as morgan from 'morgan'
 import cookieParser = require('cookie-parser')
+import helmet from 'helmet'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.use(helmet());
   app.use(cookieParser());
 
   //ENABLE CORS
