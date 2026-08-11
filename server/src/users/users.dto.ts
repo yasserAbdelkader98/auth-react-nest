@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
+import { Transform, TransformFnParams } from 'class-transformer';
 import {
   IsEmail,
   IsString,
@@ -7,30 +7,32 @@ import {
   IsStrongPassword,
   MinLength,
 } from 'class-validator';
+import { normalizeEmail, trimString } from '../common/string-transformers';
 
 export class UserDto {
   @ApiProperty({ example: 'Yasser' })
-  @Transform(({ value }) => value?.trim())
+  @Transform((params: TransformFnParams) => trimString(params.value as unknown))
   @IsNotEmpty()
   @IsString()
   @MinLength(3)
   firstName: string;
 
   @ApiProperty({ example: 'Abdelkader' })
-  @Transform(({ value }) => value?.trim())
+  @Transform((params: TransformFnParams) => trimString(params.value as unknown))
   @IsNotEmpty()
   @IsString()
   @MinLength(3)
   lastName: string;
 
   @ApiProperty({ example: 'user@example.com' })
-  @Transform(({ value }) => value?.trim()?.toLowerCase())
+  @Transform((params: TransformFnParams) =>
+    normalizeEmail(params.value as unknown),
+  )
   @IsNotEmpty()
   @IsEmail()
   email: string;
 
   @ApiProperty({ example: 'Test&123' })
-  @Transform(({ value }) => value?.trim())
   @IsNotEmpty()
   @IsStrongPassword()
   password: string;

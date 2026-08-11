@@ -3,15 +3,10 @@ import { Request } from 'express';
 import { UsersService } from './users.service';
 import { UserDto } from './users.dto';
 import { AuthGuard } from '../auth/auth.guard';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { RateLimitService } from '../rate-limit/rate-limit.service';
-
-interface AuthenticatedRequest extends Request {
-  user: {
-    id: string;
-    email: string;
-  };
-}
+import { AuthenticatedRequest } from '../auth/auth.types';
+import { AUTH_COOKIE_SECURITY_NAME } from '../auth/auth-cookie.config';
 
 @ApiTags('register')
 @Controller('users')
@@ -31,6 +26,7 @@ export class UsersController {
 
   @Delete('me')
   @UseGuards(AuthGuard)
+  @ApiCookieAuth(AUTH_COOKIE_SECURITY_NAME)
   async deleteMyAccount(@Req() request: AuthenticatedRequest) {
     return this.userService.deleteMyAccount(request.user.id);
   }

@@ -1,10 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import * as morgan from 'morgan';
-import cookieParser = require('cookie-parser');
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import {
+  AUTH_COOKIE_NAME,
+  AUTH_COOKIE_SECURITY_NAME,
+} from './auth/auth-cookie.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -36,7 +40,11 @@ async function bootstrap() {
     .setTitle('Auth App')
     .setDescription('Auth App API documentation')
     .setVersion('1.0')
-    .addCookieAuth()
+    .addCookieAuth(
+      AUTH_COOKIE_NAME,
+      { type: 'apiKey' },
+      AUTH_COOKIE_SECURITY_NAME,
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -44,4 +52,4 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT || 3000);
 }
-bootstrap();
+void bootstrap();

@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './auth.dto';
 import { UsersService } from '../users/users.service';
@@ -17,7 +17,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Credentials!');
     }
 
-    if (!(await bcrypt.compare(data.password, user.password)))
+    if (!(await compare(data.password, user.password)))
       throw new UnauthorizedException('Invalid Credentials!');
 
     const token = await this.jwtService.signAsync({
@@ -26,6 +26,7 @@ export class AuthService {
     });
 
     const { password, ...userInfo } = user;
+    void password;
     return { userInfo, token };
   }
 }
