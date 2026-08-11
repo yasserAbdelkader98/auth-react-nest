@@ -9,9 +9,9 @@ function NotFound() {
         <div className="my-4" style={{ borderRadius: '25px' }}>
           <div className="p-md-5 row justify-content-center">
             <div className="col-md-10 col-lg-6 col-12 d-flex flex-column align-items-center">
-              <p className="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
+              <h1 className="text-center fw-bold mb-5 mx-1 mx-md-4 mt-4">
                 Page Not Found
-              </p>
+              </h1>
               <h5 className="my-2">
                 Maybe the Link is broken or something went wrong
               </h5>

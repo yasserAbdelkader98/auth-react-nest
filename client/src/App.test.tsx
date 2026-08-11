@@ -3,7 +3,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
 
 vi.mock('./Network/appApis', () => ({
-  getCurrentUser: vi.fn().mockRejectedValue(new Error('Not authenticated')),
+  // Keep initialization pending so route rendering tests do not trigger
+  // unrelated asynchronous authentication state updates.
+  getCurrentUser: vi.fn().mockReturnValue(
+    new Promise(() => {
+      // Intentionally pending for route-only tests.
+    })
+  ),
   login: vi.fn(),
   logout: vi.fn(),
   register: vi.fn(),
