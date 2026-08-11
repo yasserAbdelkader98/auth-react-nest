@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException, BadGatewayException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { UserDto } from './users.dto'
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -11,23 +11,28 @@ export class UsersService {
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>){}
 
     async register(data: UserDto){
-        
-        let user = await this.userModel.findOne({ email: data.email }).lean()
-        if(!user){
-
-            let newUser = new this.userModel({
+        try {
+            const newUser = new this.userModel({
                 password: await bcrypt.hash(data.password, 10),
                 firstName: data.firstName,
                 lastName: data.lastName,
                 email: data.email
-            })
+            });
 
-            let registeredUser = await newUser.save()
-            let { password, ...obj } = registeredUser.toObject()
-            return obj
+            const registeredUser = await newUser.save();
+            const { password, ...userInfo } = registeredUser.toObject();
+            return userInfo;
+        } catch (error: unknown) {
+            if (
+                typeof error === 'object' &&
+                error !== null &&
+                'code' in error &&
+                error.code === 11000
+            ) {
+                throw new ConflictException('Email already exists!');
+            }
 
-        }else{
-            throw new ConflictException('Email already exists!')
+            throw error;
         }
     }
 

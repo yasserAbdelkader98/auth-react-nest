@@ -42,12 +42,11 @@ function Login() {
                             }
                             return errors;
                         }}
-                        onSubmit={(values: {email: string, password: string}, { setSubmitting }) => {
-                            (async function () {
+                        onSubmit={async (values: {email: string, password: string}, { setSubmitting }) => {
                             try {
                                 const res = await login(values);
                                 if (res.status === 200) {
-                                if (auth) {auth?.loginContext(res.data.token, res.data._id)}
+                                if (auth) {auth.loginContext(res.data._id)}
                                 Toast(
                                     "success",
                                     `Successfully Logged in! Welcome Back ${res.data.firstName} ${res.data.lastName}`
@@ -56,9 +55,9 @@ function Login() {
                                 }
                             } catch (err: any) {
                                 Toast("error", `${err.response.data.message}`);
+                            } finally {
+                                setSubmitting(false);
                             }
-                            })();
-                            setSubmitting(false);
                         }}
                         >
                         {({

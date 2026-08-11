@@ -2,6 +2,7 @@ import axios from "axios";
 
 export const AxisInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
+  withCredentials: true,
 });
 
 
@@ -9,7 +10,6 @@ export const AxisInstance = axios.create({
 AxisInstance.interceptors.request.use(
   function (request) {
     // Do something before request is sent
-    request.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`
     // SHOW LOADER
     document.body.classList.add('spinner');
     
@@ -37,7 +37,6 @@ AxisInstance.interceptors.response.use(
     document.body.classList.remove('spinner');
 
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
       localStorage.removeItem('userId');
 
       if (window.location.pathname !== '/login') {

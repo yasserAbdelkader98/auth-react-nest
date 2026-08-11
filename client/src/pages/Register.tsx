@@ -52,8 +52,8 @@ function Register() {
                             errors.password = "Password is Required";
                         }else if (values.password.length < 8){
                             errors.password = "Minimum 8 Characters Required";
-                        }else if(!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/i.test(values.password)){
-                            errors.password = "at least one uppercase, lowercase, symbol and number should be provided";
+                        }else if(!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(values.password)){
+                            errors.password = "At least one uppercase letter, lowercase letter, number, and symbol is required";
                         }
                         
                         if (!values.confirmPassword) {
@@ -63,10 +63,9 @@ function Register() {
                         }
                         return errors;
                     }}
-                    onSubmit={(values, { setSubmitting }) => {
-                        (async function(){
+                    onSubmit={async (values, { setSubmitting }) => {
                         try{
-                            let {confirmPassword, ...obj} = values
+                            const {confirmPassword, ...obj} = values
                             const res = await addUser(obj);
                             if(res.status === 201){
                                 Toast('success',`Welcome ${values.firstName} ${values.lastName}!Your Account has been created, Login to proceed`)
@@ -75,10 +74,9 @@ function Register() {
                         }catch(err: any){
                             console.log(err)
                             Toast('error',`${err.response.data.message}`)
+                        } finally {
+                            setSubmitting(false);
                         }
-                        })()
-            
-                        setSubmitting(false);
                     }}
                     >
                     {({

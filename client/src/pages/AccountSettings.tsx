@@ -5,7 +5,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { deleteUser } from '../Network/appApis';
+import { deleteUser, logout } from '../Network/appApis';
 import { Toast } from '../Helpers/SweetAlert';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/auth';
@@ -42,11 +42,9 @@ function AccountSettings() {
       showCancelButton: true,
       confirmButtonText: 'Delete!',
       cancelButtonText: 'No, cancel!',
-    }).then(async(result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-          await deleteAccount(auth?.userId || '');
-          if (auth) auth?.logoutContext()
-        Toast('success','Successfully Deleted!')
+        await deleteAccount(auth?.userId || '');
       } else if (
         result.dismiss === Swal.DismissReason.cancel
       ) {
@@ -57,13 +55,16 @@ function AccountSettings() {
 
   async function deleteAccount(id: string) {
     try {
-      const res = await deleteUser(id);
-      if (res.status === 200) {
-        Toast('success', `Your Account has been Deleted`);
-        Navigate('/');
-      }
+      await deleteUser(id);
+      // The account is already deleted even if clearing its now-unusable cookie fails.
+      await logout().catch(() => undefined);
+
+      auth?.logoutContext();
+      Navigate('/');
+      Toast('success', 'Your Account has been Deleted');
     } catch (err: any) {
-      Toast('error', `${err.response.data.Error}`);
+      const message = err.response?.data?.message ?? 'Unable to delete your account';
+      Toast('error', message);
     }
   }
 

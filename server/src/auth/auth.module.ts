@@ -7,15 +7,10 @@ import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     forwardRef(() => UsersModule),
-    // JwtModule.register({
-    //   global: true,
-    //   secret: 'Sekret_Key',
-    //   signOptions: { expiresIn: '24h' },
-    // })
     JwtModule.registerAsync({
       global: true,
       useFactory: async () => ({
-        secret: process.env.JWT_SECRET ?? 'Sekret_Key',
+        secret: process.env.JWT_SECRET,
         signOptions: { expiresIn: '24h' },
       }),
       inject: [],

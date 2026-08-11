@@ -15,6 +15,10 @@ export const login = (body: User) => {
   );
 }
 
+export const logout = () => {
+  return AxisInstance.post(`/auth/logout`);
+}
+
 //////////////////////////////////////////////// USERS ///////////////////////////////////////////////
 export const addUser = (body: User) => {
   return AxisInstance.post(

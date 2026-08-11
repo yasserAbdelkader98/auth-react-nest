@@ -13,16 +13,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return localStorage.getItem('userId') ?? ''
   });
 
-  const loginContext = (token: string, userId: string) => {
+  const loginContext = (userId: string) => {
     setIsLogged(true);
     setUserId(userId)
-    localStorage.setItem('token', token)
     localStorage.setItem('userId', userId)
   };
 
   const logoutContext = () => {
     setIsLogged(false);
-    localStorage.removeItem('token');
     localStorage.removeItem('userId');
   };
 

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Toast } from "../Helpers/SweetAlert";
 import { useAuth } from '../Context/auth';
+import { logout as logoutRequest } from '../Network/appApis';
 
 function MyNavbar() {
   
@@ -26,10 +27,15 @@ function MyNavbar() {
       showCancelButton: true,
       confirmButtonText: 'Logout!',
       cancelButtonText: 'No, cancel!',
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        if (auth) {auth?.logoutContext()}
-        Toast('success','Successfully logged out !')
+        try {
+          await logoutRequest();
+          if (auth) auth.logoutContext();
+          Toast('success','Successfully logged out !');
+        } catch {
+          Toast('error', 'Unable to log out. Please try again.');
+        }
       } else if (
         result.dismiss === Swal.DismissReason.cancel
       ) {
