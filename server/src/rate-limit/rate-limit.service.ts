@@ -27,7 +27,10 @@ export class RateLimitService implements OnModuleDestroy {
   }
 
   assertLoginAllowed(email: string, ip: string): void {
-    const record = this.getActiveRecord(this.failedLogins, this.loginKey(email, ip));
+    const record = this.getActiveRecord(
+      this.failedLogins,
+      this.loginKey(email, ip),
+    );
 
     if (record && record.count >= this.maxFailedLogins) {
       this.throwTooManyRequests(
@@ -111,7 +114,10 @@ export class RateLimitService implements OnModuleDestroy {
       {
         statusCode: HttpStatus.TOO_MANY_REQUESTS,
         message,
-        retryAfterSeconds: Math.max(1, Math.ceil((expiresAt - Date.now()) / 1000)),
+        retryAfterSeconds: Math.max(
+          1,
+          Math.ceil((expiresAt - Date.now()) / 1000),
+        ),
       },
       HttpStatus.TOO_MANY_REQUESTS,
     );

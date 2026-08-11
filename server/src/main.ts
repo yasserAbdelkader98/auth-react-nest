@@ -1,9 +1,9 @@
-import { NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module'
-import { ValidationPipe } from '@nestjs/common'
-import * as morgan from 'morgan'
-import cookieParser = require('cookie-parser')
-import helmet from 'helmet'
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
+import * as morgan from 'morgan';
+import cookieParser = require('cookie-parser');
+import helmet from 'helmet';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -17,10 +17,11 @@ async function bootstrap() {
     origin: process.env.FRONTEND_URL,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
-  })
+  });
 
   //GLOBAL VALIDATION MIDDLEWARE FOR ALL DTOS
-  app.useGlobalPipes(new ValidationPipe({
+  app.useGlobalPipes(
+    new ValidationPipe({
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
@@ -28,7 +29,7 @@ async function bootstrap() {
   );
 
   //LOGGER
-  app.use(morgan('dev'))
+  app.use(morgan('dev'));
 
   //API DOCS
   const config = new DocumentBuilder()
@@ -39,7 +40,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document)
+  SwaggerModule.setup('api-docs', app, document);
 
   await app.listen(process.env.PORT || 3000);
 }

@@ -33,7 +33,9 @@ export function validateEnvironment(
   }
 
   if (errors.length > 0) {
-    throw new Error(`Invalid environment configuration:\n- ${errors.join('\n- ')}`);
+    throw new Error(
+      `Invalid environment configuration:\n- ${errors.join('\n- ')}`,
+    );
   }
 
   return {

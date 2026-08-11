@@ -1,9 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEmail, IsString, IsNotEmpty, IsStrongPassword, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  IsNotEmpty,
+  IsStrongPassword,
+  MinLength,
+} from 'class-validator';
 
 export class UserDto {
-
   @ApiProperty({ example: 'Yasser' })
   @Transform(({ value }) => value?.trim())
   @IsNotEmpty()
