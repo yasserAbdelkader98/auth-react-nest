@@ -1,17 +1,17 @@
-# === BACKEND (nest-backend) ===
-nest-backend/node_modules/
-nest-backend/dist/
-nest-backend/.env
-nest-backend/.env
-nest-backend/coverage/
-nest-backend/*.tsbuildinfo
+# === BACKEND (server) ===
+server/node_modules/
+server/dist/
+server/.env
+server/.env
+server/coverage/
+server/*.tsbuildinfo
 
-# === FRONTEND (react-frontend) ===
-react-frontend/node_modules/
-react-frontend/build/
-react-frontend/.env
-react-frontend/.env
-react-frontend/coverage/
+# === FRONTEND (client) ===
+client/node_modules/
+client/build/
+client/.env
+client/.env
+client/coverage/
 
 # === COMMON FILES ===
 *.log

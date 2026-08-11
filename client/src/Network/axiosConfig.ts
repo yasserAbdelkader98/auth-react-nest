@@ -35,6 +35,16 @@ AxisInstance.interceptors.response.use(
   function (error) {
     // HIDE LOADER
     document.body.classList.remove('spinner');
+
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+
+      if (window.location.pathname !== '/login') {
+        window.location.replace('/login');
+      }
+    }
+
     return Promise.reject(error);
   }
 );
