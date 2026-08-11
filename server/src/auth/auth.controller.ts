@@ -5,6 +5,12 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './auth.dto';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { RateLimitService } from '../rate-limit/rate-limit.service';
+import { ConfigService } from '@nestjs/config';
+import {
+  AUTH_COOKIE_MAX_AGE_MS,
+  AUTH_COOKIE_NAME,
+  createAuthCookieOptions,
+} from './auth-cookie.config';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -12,6 +18,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly rateLimitService: RateLimitService,
+    private readonly configService: ConfigService,
   ) {}
 
   @HttpCode(200)
@@ -39,11 +46,9 @@ export class AuthController {
       throw error;
     }
 
-    response.cookie('access_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 24 * 60 * 60 * 1000,
+    response.cookie(AUTH_COOKIE_NAME, token, {
+      ...this.authCookieOptions(),
+      maxAge: AUTH_COOKIE_MAX_AGE_MS,
     });
 
     return userInfo;
@@ -52,12 +57,14 @@ export class AuthController {
   @HttpCode(200)
   @Post('logout')
   logout(@Res({ passthrough: true }) response: Response) {
-    response.clearCookie('access_token', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-    });
+    response.clearCookie(AUTH_COOKIE_NAME, this.authCookieOptions());
 
     return { message: 'Successfully logged out' };
+  }
+
+  private authCookieOptions() {
+    return createAuthCookieOptions(
+      this.configService.get<string>('NODE_ENV') === 'production',
+    );
   }
 }

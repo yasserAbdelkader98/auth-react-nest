@@ -33,7 +33,7 @@ async function bootstrap() {
     .setTitle('Auth App')
     .setDescription('Auth App API documentation')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addCookieAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

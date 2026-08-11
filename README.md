@@ -66,6 +66,12 @@ FRONTEND_URL=http://localhost:5173
 JWT_SECRET=<strong-random-secret>
 ```
 
+Generate a secure JWT secret with Node.js, then copy the output into `JWT_SECRET`:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+```
+
 Start the API in watch mode:
 
 ```bash
